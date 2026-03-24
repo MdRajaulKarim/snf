@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Species Details &mdash; Scientific Name Finder</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/details.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <a class="nav-brand" href="index.html">
+      <div class="nav-logo">
+        <span class="nav-logo-placeholder">SNF</span>
+      </div>
+      <span class="nav-title">Scientific Name Finder</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="details-hero">
+
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+          <a href="index.html">Home</a>
+          <span class="breadcrumb-sep">&rsaquo;</span>
+          <span id="breadcrumbName">Species</span>
+        </div>
+
+        <!-- Loading state -->
+        <div id="stateLoading">
+          <div class="state-loading">
+            <div class="state-loading-spinner"></div>
+            <p style="color:var(--text-2);font-size:14px">Fetching species data</p>
+          </div>
+        </div>
+
+        <!-- Error state -->
+        <div id="stateError" style="display:none">
+          <div class="state-error">
+            <div class="state-error-icon">&#128300;</div>
+            <h2>Species not found</h2>
+            <p>We couldn't load data for this species. The key is invalid or it may not exist in Database.</p>
+            <a href="index.html" class="btn-primary">&larr; Back to Search</a>
+          </div>
+        </div>
+
+        <!-- Content (hidden until loaded) -->
+        <div id="detailsContent" style="display:none" class="details-grid">
+
+          <!-- Left: Image -->
+          <div class="details-img-wrap">
+            <img id="detailsImg" src="" alt="" style="display:none">
+            <div class="details-img-placeholder" id="detailsImgPlaceholder">&#127807;</div>
+          </div>
+
+          <!-- Right: Info -->
+          <div class="details-info">
+            <span class="details-kingdom-badge" id="detailsBadge"></span>
+            <h1 class="details-common" id="detailsCommon"></h1>
+            <p class="details-sci" id="detailsSci"></p>
+
+            <div class="taxonomy-grid" id="taxonomyGrid"></div>
+
+            <p class="details-desc-label">About this species</p>
+            <p class="details-desc" id="detailsDesc"></p>
+
+            <div class="details-actions">
+              <button class="btn-primary" id="copyBtn" onclick="copyDetails()">&#128203; Copy Details</button>
+              <button class="btn-secondary" onclick="window.print()">&#128424; Print</button>
+              <a href="index.html" class="btn-secondary">&larr; Search Again</a>
+            </div>
+            
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span class="footer-copy">&copy; 2025 <span>Scientific Name Finder</span> &middot; Inspired by Life's Diversity</span>
+    <nav class="footer-links">
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </footer>
+
+  <script src="assets/js/details.js"></script>
+  <script>
+    document.getElementById('navToggle').addEventListener('click', function () {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>

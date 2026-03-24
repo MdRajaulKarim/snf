@@ -1,0 +1,171 @@
+/* ================================================
+   DETAILS.CSS — Species detail page
+   ================================================ */
+
+.details-hero { padding: 48px 0 0; }
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-3);
+  margin-bottom: 30px;
+}
+.breadcrumb a { color: var(--text-3); transition: color .2s; }
+.breadcrumb a:hover { color: var(--teal-3); }
+.breadcrumb-sep { opacity: .4; }
+
+.details-grid {
+  display: grid;
+  grid-template-columns: 380px 1fr;
+  gap: 36px;
+  padding-bottom: 64px;
+  align-items: start;
+}
+
+.details-img-wrap {
+  border-radius: var(--r-xl);
+  overflow: hidden;
+  border: 1px solid var(--border-1);
+  background: var(--navy-3);
+  aspect-ratio: 4/3;
+  position: sticky;
+  top: 88px;
+}
+.details-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+.details-img-placeholder {
+  width: 100%;
+  height: 100%;
+  min-height: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 72px;
+  color: var(--text-3);
+}
+
+.details-info { min-width: 0; }
+
+.details-kingdom-badge {
+  display: inline-flex;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 13px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 16px;
+}
+
+.details-common {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 4vw, 42px);
+  font-weight: 700;
+  color: var(--text-1);
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.details-sci {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-style: italic;
+  color: var(--teal-3);
+  margin-bottom: 28px;
+}
+
+.taxonomy-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 30px;
+}
+
+.taxon-item {
+  background: var(--navy-3);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-md);
+  padding: 12px 14px;
+  transition: border-color .2s;
+}
+.taxon-item:hover { border-color: var(--border-2); }
+
+.taxon-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 4px;
+}
+.taxon-value { font-size: 13px; font-weight: 500; color: var(--text-1); }
+
+.details-desc-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-3);
+  margin-bottom: 10px;
+}
+.details-desc {
+  font-size: 15px;
+  color: var(--text-2);
+  line-height: 1.8;
+  margin-bottom: 30px;
+}
+
+.details-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Loading / Error */
+.state-loading, .state-error {
+  text-align: center;
+  padding: 80px 20px;
+}
+.state-loading-spinner {
+  width: 44px; height: 44px;
+  border: 3px solid var(--border-1);
+  border-top-color: var(--teal-3);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 0 auto 18px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.state-error-icon { font-size: 44px; margin-bottom: 14px; }
+.state-error h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--text-1);
+  margin-bottom: 8px;
+}
+.state-error p { color: var(--text-2); margin-bottom: 22px; }
+
+/* GBIF attribution */
+.gbif-credit {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 18px;
+  padding: 5px 10px;
+  background: var(--navy-3);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-sm);
+}
+.gbif-credit a { color: var(--teal-3); }
+
+@media (max-width: 900px) {
+  .details-grid { grid-template-columns: 1fr; }
+  .details-img-wrap { position: static; aspect-ratio: 16/9; max-height: 360px; }
+  .taxonomy-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 480px) {
+  .details-actions { flex-direction: column; }
+  .details-actions .btn-primary,
+  .details-actions .btn-secondary { justify-content: center; }
+  .taxonomy-grid { grid-template-columns: 1fr 1fr; }
+}

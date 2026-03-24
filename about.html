@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About &mdash; Scientific Name Finder</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
+</head>
+<body>
+
+  <header class="navbar">
+    <a class="nav-brand" href="index.html">
+      <div class="nav-logo">
+        <span class="nav-logo-placeholder">SNF</span>
+      </div>
+      <span class="nav-title">Scientific Name Finder</span>
+    </a>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">Home</a>
+      <a href="about.html" class="active">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="container">
+
+      <div class="about-hero">
+        <h1 class="section-title">About the Project</h1>
+        <p class="about-lead">
+          Scientific Name Finder makes biodiversity knowledge accessible to everyone &mdash;
+          students, researchers, and curious minds alike. All data is sourced live from GBIF,
+          the world's largest open biodiversity database.
+        </p>
+      </div>
+
+      <div class="about-grid">
+
+        <div class="about-card">
+          <div class="about-card-icon">&#127919;</div>
+          <h3>Our Mission</h3>
+          <p>To promote awareness of biodiversity and make scientific knowledge accessible to everyone through a clean, responsive, and intuitive platform powered by real global data.</p>
+        </div>
+
+        <div class="about-card">
+          <div class="about-card-icon">&#127760;</div>
+          <h3>Data Source</h3>
+          <p>All species data is sourced live from <strong style="color:var(--teal-3)">GBIF</strong> (Global Biodiversity Information Facility) &mdash; the world's largest open biodiversity database with 8 million+ species records and 1.9 billion+ occurrences.</p>
+        </div>
+
+        <div class="about-card full">
+          <div class="about-card-icon">&#128101;</div>
+          <h3>Meet the Team</h3>
+          <div class="team-list">
+            <div class="team-member">
+              <div class="team-avatar">RL</div>
+              <div>
+                <div class="team-name">Rajaul Karim Laskar</div>
+                <div class="team-role">Lead Developer</div>
+              </div>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar">MH</div>
+              <div>
+                <div class="team-name">Mohmodul Hussan Laskar</div>
+                <div class="team-role">Researcher</div>
+              </div>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar">MK</div>
+              <div>
+                <div class="team-name">Meghangi Kar</div>
+                <div class="team-role">Data &amp; Presentation</div>
+              </div>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar">RB</div>
+              <div>
+                <div class="team-name">Rahim Uddin Barbhuiya</div>
+                <div class="team-role">Project Tester</div>
+              </div>
+            </div>
+            <div class="team-member">
+              <div class="team-avatar">AQ</div>
+              <div>
+                <div class="team-name">Abul Qaasim Laskar</div>
+                <div class="team-role">Project Assistant</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-card full">
+          <div class="about-card-icon">&#9881;&#65039;</div>
+          <h3>Technologies Used</h3>
+          <div class="tech-list">
+            <span class="tech-tag">HTML5</span>
+            <span class="tech-tag">CSS3</span>
+            <span class="tech-tag">Vanilla JavaScript</span>
+            <span class="tech-tag">GBIF REST API</span>
+            <span class="tech-tag">Netlify Hosting</span>
+            <span class="tech-tag">Netlify Forms</span>
+            <span class="tech-tag">Visual Studio Code</span>
+            <span class="tech-tag">Playfair Display</span>
+            <span class="tech-tag">DM Sans</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <span class="footer-copy">&copy; 2025 <span>Scientific Name Finder</span> &middot; Inspired by Life's Diversity</span>
+    <nav class="footer-links">
+      <a href="about.html">About</a>
+      <a href="contact.html">Contact</a>
+    </nav>
+  </footer>
+
+  <script>
+    document.getElementById('navToggle').addEventListener('click', function () {
+      document.getElementById('navLinks').classList.toggle('open');
+    });
+  </script>
+</body>
+</html>
