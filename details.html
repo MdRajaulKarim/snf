@@ -12,7 +12,13 @@
   <header class="navbar">
     <a class="nav-brand" href="index.html">
       <div class="nav-logo">
+
+
+
         <span class="nav-logo-placeholder">SNF</span>
+
+
+
       </div>
       <span class="nav-title">Scientific Name Finder</span>
     </a>
@@ -22,7 +28,6 @@
     <nav class="nav-links" id="navLinks">
       <a href="index.html">Home</a>
       <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
     </nav>
   </header>
 
@@ -41,7 +46,7 @@
         <div id="stateLoading">
           <div class="state-loading">
             <div class="state-loading-spinner"></div>
-            <p style="color:var(--text-2);font-size:14px">Fetching species data</p>
+            <p style="color:var(--text-2);font-size:14px">Fetching species data, please wait...</p>
           </div>
         </div>
 
@@ -50,7 +55,7 @@
           <div class="state-error">
             <div class="state-error-icon">&#128300;</div>
             <h2>Species not found</h2>
-            <p>We couldn't load data for this species. The key is invalid or it may not exist in Database.</p>
+            <p>We couldn't load data for this species. The key is invalid.</p>
             <a href="index.html" class="btn-primary">&larr; Back to Search</a>
           </div>
         </div>
@@ -58,7 +63,7 @@
         <!-- Content (hidden until loaded) -->
         <div id="detailsContent" style="display:none" class="details-grid">
 
-          <!-- Left: Image -->
+          <!-- Image -->
           <div class="details-img-wrap">
             <img id="detailsImg" src="" alt="" style="display:none">
             <div class="details-img-placeholder" id="detailsImgPlaceholder">&#127807;</div>
@@ -80,7 +85,6 @@
               <button class="btn-secondary" onclick="window.print()">&#128424; Print</button>
               <a href="index.html" class="btn-secondary">&larr; Search Again</a>
             </div>
-            
           </div>
 
         </div>
@@ -91,8 +95,8 @@
   <footer class="site-footer">
     <span class="footer-copy">&copy; 2025 <span>Scientific Name Finder</span> &middot; Inspired by Life's Diversity</span>
     <nav class="footer-links">
+      <a href="index.html">Home</a>
       <a href="about.html">About</a>
-      <a href="contact.html">Contact</a>
     </nav>
   </footer>
 

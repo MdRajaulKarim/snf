@@ -21,10 +21,9 @@ var FEATURED_KEYS = [
   2440091,  /* Canis lupus         — Wolf                */
 ];
 
-var sliderIndex   = 0;
-var cardsPerView  = 4;
-var autoTimer     = null;
-var totalCards    = 0;
+var sliderIndex  = 0;
+var cardsPerView = 4;
+var autoTimer    = null;
 
 async function initSlider() {
   var track = document.getElementById('sliderTrack');
@@ -37,17 +36,39 @@ async function initSlider() {
     goToSlide(0);
   });
 
+  /* FIX 3: Hard timeout — show error after 12s if GBIF never responds */
+  var timedOut = false;
+  var timeoutId = setTimeout(function () {
+    timedOut = true;
+    track.innerHTML =
+      '<div style="padding:48px 20px;color:var(--text-3);font-size:14px;text-align:center">' +
+      'Couldn’t retrieve data for this species. ' +  
+      'Please check the key and try again.</div>';
+  }, 12000);
+
+  /* FIX 2: Batch requests — 4 at a time, not all 12 simultaneously */
   var species = await fetchFeaturedSpecies();
+  clearTimeout(timeoutId);
+  if (timedOut) return;
 
   if (!species.length) {
-    track.innerHTML = '<div style="padding:48px 20px;color:var(--text-3);font-size:14px;text-align:center">Could not load species. Please check your internet connection.</div>';
+    track.innerHTML =
+      '<div style="padding:48px 20px;color:var(--text-3);font-size:14px;text-align:center">' +
+      'No internet connection. ' + 
+      'Unable to load species.</div>';
     return;
   }
 
-  totalCards = species.length;
   track.innerHTML = species.map(buildCard).join('');
   buildDots(dots, species.length);
-  startAutoSlide();
+
+  /* FIX 1: Wait one frame so cards are painted and have real offsetWidth */
+  requestAnimationFrame(function () {
+    requestAnimationFrame(function () {
+      goToSlide(0);
+      startAutoSlide();
+    });
+  });
 
   var prevBtn = document.getElementById('sliderPrev');
   var nextBtn = document.getElementById('sliderNext');
@@ -63,48 +84,57 @@ function updateCardsPerView() {
   else                cardsPerView = 4;
 }
 
+/* FIX 2: Fetch in batches of 4 to avoid GBIF rate limiting */
 async function fetchFeaturedSpecies() {
   var results = [];
-  /* Shuffle for variety each load */
-  var keys = FEATURED_KEYS.slice().sort(function () { return Math.random() - 0.5; });
+  var keys    = FEATURED_KEYS.slice().sort(function () { return Math.random() - 0.5; });
+  var BATCH   = 4;
 
-  await Promise.all(keys.map(async function (key) {
-    try {
-      var responses = await Promise.all([
-        fetch(GBIF_SPECIES + '/' + key),
-        fetch(GBIF_OCC + '?taxonKey=' + key + '&mediaType=StillImage&limit=1')
-      ]);
-      var spec = await responses[0].json();
-      var occ  = await responses[1].json();
+  for (var i = 0; i < keys.length; i += BATCH) {
+    var batch = keys.slice(i, i + BATCH);
+    await Promise.all(batch.map(async function (key) {
+      try {
+        var specRes = await fetch(GBIF_SPECIES + '/' + key);
+        var spec    = await specRes.json();
 
-      var img = occ && occ.results && occ.results[0] && occ.results[0].media && occ.results[0].media[0]
-        ? occ.results[0].media[0].identifier
-        : null;
+        var occRes  = await fetch(GBIF_OCC + '?taxonKey=' + key + '&mediaType=StillImage&limit=1');
+        var occ     = await occRes.json();
 
-      results.push({
-        key:     key,
-        common:  spec.vernacularName || spec.canonicalName || spec.scientificName || 'Unknown Species',
-        sci:     spec.canonicalName  || spec.scientificName || '',
-        family:  spec.family  || '',
-        kingdom: spec.kingdom || '',
-        img:     img
-      });
-    } catch (e) { /* skip failed */ }
-  }));
+        var img = occ && occ.results && occ.results[0] &&
+                  occ.results[0].media && occ.results[0].media[0]
+          ? occ.results[0].media[0].identifier
+          : null;
+
+        results.push({
+          key:     key,
+          common:  spec.vernacularName || spec.canonicalName || spec.scientificName || 'Unknown Species',
+          sci:     spec.canonicalName  || spec.scientificName || '',
+          family:  spec.family  || '',
+          kingdom: spec.kingdom || '',
+          img:     img
+        });
+      } catch (e) { /* silently skip failed entry */ }
+    }));
+    /* Small pause between batches to be polite to GBIF */
+    if (i + BATCH < keys.length) await sleep(300);
+  }
 
   return results.sort(function () { return Math.random() - 0.5; });
 }
 
+function sleep(ms) {
+  return new Promise(function (resolve) { setTimeout(resolve, ms); });
+}
+
 function buildCard(s) {
-  var kingdom  = (s.kingdom || '').toLowerCase();
-  var isPlant  = kingdom === 'plantae' || kingdom === 'fungi';
-  var badgeBg  = isPlant
+  var kingdom     = (s.kingdom || '').toLowerCase();
+  var isPlant     = kingdom === 'plantae' || kingdom === 'fungi';
+  var badgeBg     = isPlant
     ? 'background:rgba(14,138,158,0.88);color:#c8f0f8'
     : 'background:rgba(220,65,20,0.88);color:#fff0ea';
-  var badgeText  = esc(s.kingdom || 'Species');
+  var badgeText   = esc(s.kingdom || 'Species');
   var placeholder = isPlant ? '&#127807;' : '&#128062;';
-
-  var imgHtml = s.img
+  var imgHtml     = s.img
     ? '<img src="' + esc(s.img) + '" alt="' + esc(s.common) + '" loading="lazy"' +
       ' onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'">'
     : '';
@@ -118,11 +148,22 @@ function buildCard(s) {
     '</div>' +
     '<div class="card-body">' +
       '<div class="card-common">' + esc(s.common) + '</div>' +
-      '<div class="card-sci">' + esc(s.sci) + '</div>' +
+      '<div class="card-sci">'    + esc(s.sci)    + '</div>' +
       (s.family ? '<div class="card-family">Family: ' + esc(s.family) + '</div>' : '') +
       '<div class="card-cta"><span class="card-view-btn">View Details &rarr;</span></div>' +
     '</div>' +
   '</a>';
+}
+
+/* FIX 1: Use CSS gap-aware width calculation */
+function getCardWidth() {
+  var track = document.getElementById('sliderTrack');
+  if (!track) return 260;
+  var viewport = track.parentElement;
+  if (!viewport) return 260;
+  var gap  = 20;
+  var vw   = viewport.offsetWidth;
+  return Math.floor((vw - (gap * (cardsPerView - 1))) / cardsPerView);
 }
 
 function goToSlide(index) {
@@ -131,12 +172,16 @@ function goToSlide(index) {
   var cards = track.querySelectorAll('.species-card');
   if (!cards.length) return;
 
-  var max = Math.max(0, cards.length - cardsPerView);
-  sliderIndex = Math.max(0, Math.min(index, max));
+  var max        = Math.max(0, cards.length - cardsPerView);
+  sliderIndex    = Math.max(0, Math.min(index, max));
 
-  var cardWidth = cards[0].offsetWidth;
-  var gap       = 20;
+  /* FIX 1: calculate width from viewport, not from card.offsetWidth */
+  var cardWidth  = getCardWidth();
+  var gap        = 20;
   track.style.transform = 'translateX(-' + (sliderIndex * (cardWidth + gap)) + 'px)';
+
+  /* Also enforce card widths via CSS so they always match */
+  cards.forEach(function (c) { c.style.flex = '0 0 ' + cardWidth + 'px'; });
   updateDots();
 }
 
@@ -159,10 +204,12 @@ function prevSlide() {
 function buildDots(container, total) {
   if (!container) return;
   var pages = Math.ceil(total / cardsPerView);
-  var html = '';
+  var html  = '';
   for (var i = 0; i < pages; i++) {
     var slideIdx = i * cardsPerView;
-    html += '<button class="dot' + (i === 0 ? ' active' : '') + '" aria-label="Page ' + (i + 1) + '" onclick="goToSlide(' + slideIdx + ');resetAutoSlide()"></button>';
+    html += '<button class="dot' + (i === 0 ? ' active' : '') +
+      '" aria-label="Page ' + (i + 1) +
+      '" onclick="goToSlide(' + slideIdx + ');resetAutoSlide()"></button>';
   }
   container.innerHTML = html;
 }
@@ -173,11 +220,14 @@ function updateDots() {
   dots.forEach(function (d, i) { d.classList.toggle('active', i === page); });
 }
 
-function startAutoSlide()  { autoTimer = setInterval(nextSlide, 4000); }
-function resetAutoSlide()  { clearInterval(autoTimer); startAutoSlide(); }
+function startAutoSlide() {}
+// function startAutoSlide() { autoTimer = setInterval(nextSlide, 4500); }
+function resetAutoSlide() { clearInterval(autoTimer); startAutoSlide(); }
 
 function esc(str) {
-  return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  return String(str || '')
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
 
 document.addEventListener('DOMContentLoaded', initSlider);

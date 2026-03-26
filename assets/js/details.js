@@ -114,7 +114,7 @@ function renderDetails(spec, imgUrl) {
     }).join('');
   }
 
-  /* Description — DB doesn't always have one, so we build a fallback */
+  /* Description — GBIF doesn't always have one, so we build a fallback */
   var descEl = document.getElementById('detailsDesc');
   if (descEl) {
     if (spec.description) {
@@ -157,6 +157,7 @@ function copyDetails() {
     'Family:   ' + (s.family   || '\u2014'),
     'Genus:    ' + (s.genus    || '\u2014'),
     'Status:   ' + (s.taxonomicStatus || '\u2014'),
+    'Source:   GBIF (https://www.gbif.org)',
   ].join('\n');
 
   navigator.clipboard.writeText(text).then(function () {

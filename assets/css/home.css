@@ -1,14 +1,17 @@
-/* ================================================
-   HOME.CSS — Homepage specific styles
-   ================================================ */
+  /* HOME.CSS — Homepage specific styles */
 
 /* ── Hero ──────────────────────────────────────── */
 .hero {
   position: relative;
   padding: 80px 0 60px;
   text-align: center;
-  overflow: hidden;
+  overflow: visible;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
 }
+
+.hero .container { width: 100%; position: relative; z-index: 1; }
 
 .hero::before {
   content: '';
@@ -18,6 +21,7 @@
   width: 700px; height: 500px;
   background: radial-gradient(ellipse, rgba(14,154,174,0.16) 0%, transparent 68%);
   pointer-events: none;
+  z-index: 0;
 }
 
 .hero-eyebrow {
@@ -378,7 +382,7 @@
 }
 .species-card:hover .card-view-btn { color: var(--coral-3); gap: 8px; }
 
-/* Dots */
+/* ── Dots ─────────────────────────────────────────── */
 .slider-dots {
   display: flex;
   justify-content: center;
@@ -396,8 +400,12 @@
 }
 .dot.active { background: var(--teal-3); transform: scale(1.35); }
 
-/* Skeleton */
-.skeleton-img { height: 188px; background: var(--navy-4); animation: shimmer 1.3s ease-in-out infinite alternate; }
+/* ── Skeleton ─────────────────────────────────────── */
+.skeleton-img {
+  height: 188px;
+  background: var(--navy-4);
+  animation: shimmer 1.3s ease-in-out infinite alternate;
+}
 .skeleton-line {
   height: 13px;
   background: var(--navy-4);
@@ -409,13 +417,13 @@
 
 /* ── Responsive ──────────────────────────────────── */
 @media (max-width: 1024px) { .species-card { flex: 0 0 calc(33.33% - 14px); } }
-@media (max-width: 768px)  {
-  .hero { padding: 60px 0 48px; }
+@media (max-width: 768px) {
+  .hero { padding: 60px 0 48px; min-height: 320px; }
   .stats-bar { gap: 22px; }
   .species-card { flex: 0 0 calc(50% - 10px); }
   .slider-section { padding: 44px 0; }
 }
-@media (max-width: 480px)  {
+@media (max-width: 480px) {
   .species-card { flex: 0 0 100%; }
   .search-box { padding: 5px 5px 5px 16px; }
   .search-btn { padding: 8px 16px; font-size: 13px; }
