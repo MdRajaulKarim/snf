@@ -1,0 +1,9 @@
+PS C:\Users\Rajaul Karim\Desktop\snf> git add .
+>> git commit -m "Updated pages, CSS, and JS"
+>> git push
+
+--- Copy ---
+
+git add .
+git commit -m "Updated pages, CSS, and JS"
+git push
