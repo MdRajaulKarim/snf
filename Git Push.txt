@@ -4,6 +4,7 @@ PS C:\Users\Rajaul Karim\Desktop\snf> git add .
 
 --- Copy ---
 
+git pull origin main
 git add .
 git commit -m "Updated pages, CSS, and JS"
 git push
