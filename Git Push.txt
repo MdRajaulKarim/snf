@@ -16,3 +16,7 @@ git pull origin main --rebase
 git add .
 git commit -m "Fix layout issue and update JS validation"
 git push origin main
+
+--- Remember ---
+
+Always pull before push or start
