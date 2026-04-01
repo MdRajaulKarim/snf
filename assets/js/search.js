@@ -102,7 +102,7 @@ async function fetchSuggestions(query, dropdown) {
 
 function renderDropdown(items, dropdown) {
   dropdown.innerHTML = items.map(function (item) {
-    var name     = item.vernacularName || item.canonicalName || item.scientificName || 'Unknown';
+    var name     = item.vernacularName || item.canonicalName || item.scientificName || '';
     var sci      = item.canonicalName  || item.scientificName || '';
     /* Don't show sci name if it's identical to display name */
     var sciLine  = (sci && sci !== name) ? sci : '';

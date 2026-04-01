@@ -107,7 +107,7 @@ async function fetchFeaturedSpecies() {
 
         results.push({
           key:     key,
-          common:  spec.vernacularName || spec.canonicalName || spec.scientificName || 'Unknown Species',
+          common:  spec.vernacularName || spec.canonicalName || spec.scientificName || '',
           sci:     spec.canonicalName  || spec.scientificName || '',
           family:  spec.family  || '',
           kingdom: spec.kingdom || '',
