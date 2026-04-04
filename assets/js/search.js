@@ -122,6 +122,24 @@ async function fetchSuggestions(query, dropdown) {
     });
 
     if (!merged.length) { showNoResult(dropdown); return; }
+
+    /* Sort results: exact matches first, then starts with, then contains */
+    merged.sort(function (a, b) {
+      var aName = ((a.vernacularName || a.canonicalName || a.scientificName || '').toLowerCase());
+      var bName = ((b.vernacularName || b.canonicalName || b.scientificName || '').toLowerCase());
+      var queryLower = query.toLowerCase();
+
+      var aExact = aName === queryLower ? 0 : 1;
+      var bExact = bName === queryLower ? 0 : 1;
+      if (aExact !== bExact) return aExact - bExact;
+
+      var aStarts = aName.indexOf(queryLower) === 0 ? 0 : 1;
+      var bStarts = bName.indexOf(queryLower) === 0 ? 0 : 1;
+      if (aStarts !== bStarts) return aStarts - bStarts;
+
+      return 0;
+    });
+
     selectedIndex = -1;
     renderDropdown(merged.slice(0, 7), dropdown);
 
@@ -144,12 +162,17 @@ function renderDropdown(items, dropdown) {
     var badgeText  = item.kingdom || item.rank || 'Species';
     var emoji      = isPlant ? '&#127807;' : '&#128062;';
 
+    /* Show if result is from common name or scientific name search */
+    var matchType = item.vernacularName ? 'Common Name' : 'Scientific';
+    var matchBadge = '<span class="match-badge">' + esc(matchType) + '</span>';
+
     return '<a class="dropdown-item" href="details.html?key=' + esc(key) + '" id="drow-' + esc(key) + '">' +
       '<div class="dropdown-item-img" id="dimg-' + esc(key) + '">' + emoji + '</div>' +
       '<div style="min-width:0;flex:1">' +
         '<div class="dropdown-item-name">' + esc(name) + '</div>' +
         (sciLine ? '<div class="dropdown-item-sci">' + esc(sciLine) + '</div>' : '') +
       '</div>' +
+      matchBadge +
       '<span class="dropdown-item-badge ' + badgeClass + '">' + esc(badgeText) + '</span>' +
     '</a>';
   }).join('');
