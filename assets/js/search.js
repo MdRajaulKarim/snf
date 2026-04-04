@@ -4,6 +4,7 @@
    ================================================ */
 
 var GBIF_SUGGEST  = 'https://api.gbif.org/v1/species/suggest';
+var GBIF_SPECIES  = 'https://api.gbif.org/v1/species';
 var GBIF_SEARCH   = 'https://api.gbif.org/v1/species/search';
 var GBIF_OCC      = 'https://api.gbif.org/v1/occurrence/search';
 
@@ -97,34 +98,31 @@ async function fetchAndGoToFirst(query) {
 
 async function fetchSuggestions(query, dropdown) {
   try {
-    /* Run both suggest (scientific) and vernacular search in parallel */
-    var [suggestRes, vernacularRes] = await Promise.all([
-      fetch(GBIF_SUGGEST + '?q=' + encodeURIComponent(query) + '&limit=5'),
-      fetch(GBIF_SEARCH  + '?q=' + encodeURIComponent(query) + '&limit=4&language=eng')
-    ]);
+    /* Get species keys from suggest endpoint */
+    var suggestRes = await fetch(GBIF_SUGGEST + '?q=' + encodeURIComponent(query) + '&limit=10');
+    var suggestData = await suggestRes.json();
 
-    var suggestData   = await suggestRes.json();
-    var vernacularData = await vernacularRes.json();
+    if (!Array.isArray(suggestData) || !suggestData.length) {
+      showNoResult(dropdown);
+      return;
+    }
 
-    /* Merge results, deduplicate by key */
-    var seen = new Set();
-    var merged = [];
-
-    (Array.isArray(suggestData) ? suggestData : []).forEach(function (item) {
-      var k = item.key || item.usageKey;
-      if (k && !seen.has(k)) { seen.add(k); merged.push(item); }
+    /* Fetch full species details to get vernacularName */
+    var speciesPromises = suggestData.slice(0, 7).map(function (item) {
+      var key = item.key || item.usageKey;
+      if (!key) return Promise.resolve(null);
+      return fetch(GBIF_SPECIES + '/' + key)
+        .then(function (r) { return r.json(); })
+        .catch(function () { return null; });
     });
 
-    var vResults = (vernacularData && vernacularData.results) ? vernacularData.results : [];
-    vResults.forEach(function (item) {
-      var k = item.key || item.usageKey;
-      if (k && !seen.has(k)) { seen.add(k); merged.push(item); }
-    });
+    var speciesDetails = await Promise.all(speciesPromises);
+    var results = speciesDetails.filter(function (s) { return s && s.key; });
 
-    if (!merged.length) { showNoResult(dropdown); return; }
+    if (!results.length) { showNoResult(dropdown); return; }
 
-    /* Sort results: exact matches first, then starts with, then contains */
-    merged.sort(function (a, b) {
+    /* Sort results: exact matches first, then starts with query */
+    results.sort(function (a, b) {
       var aName = ((a.vernacularName || a.canonicalName || a.scientificName || '').toLowerCase());
       var bName = ((b.vernacularName || b.canonicalName || b.scientificName || '').toLowerCase());
       var queryLower = query.toLowerCase();
@@ -141,9 +139,10 @@ async function fetchSuggestions(query, dropdown) {
     });
 
     selectedIndex = -1;
-    renderDropdown(merged.slice(0, 7), dropdown);
+    renderDropdown(results.slice(0, 7), dropdown);
 
   } catch (err) {
+    console.error('Search error:', err);
     dropdown.innerHTML = '<div class="dropdown-no-result">Connection error..</div>';
     showDropdown(dropdown);
   }
