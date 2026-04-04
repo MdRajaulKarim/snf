@@ -17,6 +17,15 @@ git add .
 git commit -m "Fix layout issue and update JS validation"
 git push origin main
 
+<<<<<<< HEAD
 --- Remember ---
 
 Always pull before push or start
+=======
+
+git status
+git pull origin main --rebase
+git add .
+git commit -m "Adding features"
+git push origin main
+>>>>>>> 1dd277a (Add keyboard navigation to search bar)

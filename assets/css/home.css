@@ -164,6 +164,7 @@
 }
 .dropdown-item:last-child { border-bottom: none; }
 .dropdown-item:hover { background: rgba(30,207,224,0.07); }
+.dropdown-item-selected { background: rgba(30,207,224,0.12); }
 
 .dropdown-item-img {
   width: 44px;

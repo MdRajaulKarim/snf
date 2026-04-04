@@ -8,6 +8,7 @@ var GBIF_SEARCH   = 'https://api.gbif.org/v1/species/search';
 var GBIF_OCC      = 'https://api.gbif.org/v1/occurrence/search';
 
 var searchTimeout = null;
+var selectedIndex = -1;
 
 function initSearch() {
   var input    = document.getElementById('searchInput');
@@ -17,6 +18,7 @@ function initSearch() {
 
   input.addEventListener('input', function () {
     clearTimeout(searchTimeout);
+    selectedIndex = -1;
     var q = this.value.trim();
     if (q.length < 2) { hideDropdown(dropdown); return; }
     showLoading(dropdown);
@@ -25,12 +27,32 @@ function initSearch() {
 
   input.addEventListener('keydown', function (e) {
     if (e.key === 'Enter') {
+      e.preventDefault();
+      var items = dropdown.querySelectorAll('.dropdown-item');
+      if (selectedIndex >= 0 && items[selectedIndex]) {
+        window.location.href = items[selectedIndex].getAttribute('href');
+        return;
+      }
       var first = dropdown.querySelector('.dropdown-item');
       if (first) { window.location.href = first.getAttribute('href'); return; }
       var q = input.value.trim();
       if (q) fetchAndGoToFirst(q);
     }
-    if (e.key === 'Escape') hideDropdown(dropdown);
+    if (e.key === 'Escape') { hideDropdown(dropdown); selectedIndex = -1; }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      var items = dropdown.querySelectorAll('.dropdown-item');
+      if (!items.length) return;
+      selectedIndex = Math.min(selectedIndex + 1, items.length - 1);
+      highlightSelected(items);
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      var items = dropdown.querySelectorAll('.dropdown-item');
+      if (!items.length) return;
+      selectedIndex = Math.max(selectedIndex - 1, -1);
+      highlightSelected(items);
+    }
   });
 
   if (btn) {
@@ -44,7 +66,15 @@ function initSearch() {
   }
 
   document.addEventListener('click', function (e) {
-    if (!e.target.closest('#searchWrapper')) hideDropdown(dropdown);
+    if (!e.target.closest('#searchWrapper')) { hideDropdown(dropdown); selectedIndex = -1; }
+  });
+
+  /* Press "/" to focus search */
+  document.addEventListener('keydown', function (e) {
+    if (e.key === '/') {
+      e.preventDefault();
+      input.focus();
+    }
   });
 }
 
@@ -92,6 +122,7 @@ async function fetchSuggestions(query, dropdown) {
     });
 
     if (!merged.length) { showNoResult(dropdown); return; }
+    selectedIndex = -1;
     renderDropdown(merged.slice(0, 7), dropdown);
 
   } catch (err) {
@@ -160,6 +191,17 @@ async function lazyLoadThumbnails(items) {
 /* ── Helpers ─────────────────────────────────── */
 function showDropdown(el)  { if (el) el.classList.add('show'); }
 function hideDropdown(el)  { if (el) el.classList.remove('show'); }
+
+function highlightSelected(items) {
+  items.forEach(function (item, idx) {
+    if (idx === selectedIndex) {
+      item.classList.add('dropdown-item-selected');
+      item.scrollIntoView({ block: 'nearest' });
+    } else {
+      item.classList.remove('dropdown-item-selected');
+    }
+  });
+}
 
 function showLoading(el) {
   if (!el) return;
