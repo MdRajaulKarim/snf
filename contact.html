@@ -132,22 +132,23 @@
       var email   = document.getElementById('contactEmail').value.trim();
       var subject = document.getElementById('contactSubject').value.trim();
       var message = document.getElementById('contactMessage').value.trim();
-      var alert   = document.getElementById('formAlert');
+      var alertEl = document.getElementById('formAlert');
 
       if (!name || !email || !subject || !message) {
-        alert.className = 'form-alert error';
-        alert.textContent = 'Please fill in all fields before sending.';
+        alertEl.className = 'form-alert error';
+        alertEl.textContent = 'Please fill in all fields before sending.';
         return;
       }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        alert.className = 'form-alert error';
-        alert.textContent = 'Please enter a valid email address.';
+        alertEl.className = 'form-alert error';
+        alertEl.textContent = 'Please enter a valid email address.';
         return;
       }
 
+      /* textContent is used (not innerHTML) so user input is never parsed as HTML */
       /* In a static site there is no backend; show a thank-you message */
-      alert.className = 'form-alert success';
-      alert.textContent = 'Thank you, ' + name + '! Your message has been noted. We\u2019ll be in touch soon.';
+      alertEl.className = 'form-alert success';
+      alertEl.textContent = 'Thank you, ' + name + '! Your message has been noted. We\u2019ll be in touch soon.';
       document.getElementById('contactForm').reset();
     });
   </script>

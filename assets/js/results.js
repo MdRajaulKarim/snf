@@ -126,6 +126,8 @@ function renderPage(page) {
 }
 
 async function lazyLoadResultThumbnails(items) {
+  /* Intentionally fire-and-forget: thumbnails load in the background
+     without blocking the results render, matching the pattern in search.js */
   items.slice(0, PAGE_SIZE).forEach(async function (item) {
     var key   = item.key || item.usageKey;
     var imgEl = document.getElementById('rimg-' + key);
@@ -179,16 +181,12 @@ function goToPage(page) {
 
 /* ── State helpers ──────────────────────────── */
 function showState(id) {
+  var displayMap = { resultsContent: 'block' };
   var ids = ['stateLoading', 'stateError', 'stateNoResults', 'resultsContent'];
   ids.forEach(function (s) {
     var el = document.getElementById(s);
-    if (el) el.style.display = (s === id) ? (s === 'resultsContent' ? 'block' : 'flex') : 'none';
+    if (el) el.style.display = (s === id) ? (displayMap[s] || 'block') : 'none';
   });
-  /* stateLoading and stateError use block layout */
-  var el = document.getElementById(id);
-  if (el && (id === 'stateLoading' || id === 'stateError' || id === 'stateNoResults')) {
-    el.style.display = 'block';
-  }
 }
 
 function esc(str) {
