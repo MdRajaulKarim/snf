@@ -33,10 +33,8 @@ function initSearch() {
         window.location.href = items[selectedIndex].getAttribute('href');
         return;
       }
-      var first = dropdown.querySelector('.dropdown-item');
-      if (first) { window.location.href = first.getAttribute('href'); return; }
       var q = input.value.trim();
-      if (q) fetchAndGoToFirst(q);
+      if (q) window.location.href = 'search-results.html?q=' + encodeURIComponent(q);
     }
     if (e.key === 'Escape') { hideDropdown(dropdown); selectedIndex = -1; }
     if (e.key === 'ArrowDown') {
@@ -59,9 +57,7 @@ function initSearch() {
     btn.addEventListener('click', function () {
       var q = input.value.trim();
       if (!q) return;
-      var first = dropdown.querySelector('.dropdown-item');
-      if (first) { window.location.href = first.getAttribute('href'); return; }
-      fetchAndGoToFirst(q);
+      window.location.href = 'search-results.html?q=' + encodeURIComponent(q);
     });
   }
 
@@ -76,23 +72,6 @@ function initSearch() {
       input.focus();
     }
   });
-}
-
-/* Go directly to first result when Enter is pressed */
-async function fetchAndGoToFirst(query) {
-  try {
-    var url  = GBIF_SUGGEST + '?q=' + encodeURIComponent(query) + '&limit=1';
-    var res  = await fetch(url);
-    var data = await res.json();
-    var key  = data && data[0] ? (data[0].key || data[0].usageKey) : null;
-    if (key) {
-      window.location.href = 'details.html?key=' + key;
-    } else {
-      window.location.href = 'details.html?q=' + encodeURIComponent(query);
-    }
-  } catch (e) {
-    window.location.href = 'details.html?q=' + encodeURIComponent(query);
-  }
 }
 
 async function fetchSuggestions(query, dropdown) {
@@ -218,7 +197,8 @@ function showNoResult(el) {
 function esc(str) {
   return String(str || '')
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+    .replace(/'/g,'&#39;');
 }
 
 /* Called from HTML quick-search chips */

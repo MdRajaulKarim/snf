@@ -1,0 +1,192 @@
+/* ================================================
+   RESULTS.CSS — Search results page styles
+   ================================================ */
+
+/* ── Search row ────────────────────────────────── */
+.results-search-row {
+  padding: 40px 0 32px;
+  display: flex;
+  justify-content: center;
+}
+
+.results-search-row .search-wrapper {
+  max-width: 640px;
+  width: 100%;
+}
+
+/* ── Results header ────────────────────────────── */
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border-1);
+}
+
+.results-title {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 4vw, 30px);
+  font-weight: 700;
+  color: var(--text-1);
+  margin-bottom: 4px;
+}
+.results-title em { font-style: italic; color: var(--teal-3); }
+
+.results-count {
+  font-size: 13px;
+  color: var(--text-3);
+}
+
+/* ── Results grid ──────────────────────────────── */
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+/* ── Result card ───────────────────────────────── */
+.result-card {
+  display: flex;
+  align-items: center;
+  background: var(--navy-3);
+  border: 1px solid var(--border-1);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s, transform .2s;
+  color: var(--text-1);
+  text-decoration: none;
+  gap: 0;
+}
+.result-card:hover {
+  border-color: var(--border-2);
+  box-shadow: var(--glow-teal);
+  transform: translateY(-3px);
+}
+
+.result-card-img {
+  width: 80px;
+  height: 80px;
+  flex-shrink: 0;
+  background: var(--navy-4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  overflow: hidden;
+  border-radius: var(--r-md) 0 0 var(--r-md);
+  align-self: stretch;
+}
+
+.result-card-body {
+  flex: 1;
+  padding: 14px 16px;
+  min-width: 0;
+}
+
+.result-badge {
+  font-size: 9px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+
+.result-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-1);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.result-sci {
+  font-size: 12px;
+  font-style: italic;
+  color: var(--teal-4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.result-family {
+  font-size: 11px;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+
+.result-arrow {
+  padding: 0 14px;
+  font-size: 16px;
+  color: var(--coral-2);
+  flex-shrink: 0;
+  transition: color .2s, padding .2s;
+}
+.result-card:hover .result-arrow {
+  color: var(--coral-3);
+  padding-right: 10px;
+}
+
+/* ── Pagination ────────────────────────────────── */
+.results-pagination {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 0 48px;
+  flex-wrap: wrap;
+}
+
+.page-btn {
+  min-width: 36px;
+  height: 36px;
+  border-radius: var(--r-sm);
+  background: var(--navy-3);
+  border: 1px solid var(--border-2);
+  color: var(--text-2);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 0 10px;
+  transition: background .2s, border-color .2s, color .2s;
+}
+.page-btn:hover { background: rgba(30,207,224,0.1); border-color: var(--teal-3); color: var(--teal-3); }
+.page-btn.active { background: var(--teal-2); border-color: var(--teal-2); color: #fff; }
+
+/* ── State panels (reuse from details.css) ──────── */
+.state-loading,
+.state-error {
+  text-align: center;
+  padding: 80px 20px;
+}
+.state-loading-spinner {
+  width: 44px;
+  height: 44px;
+  border: 3px solid var(--border-1);
+  border-top-color: var(--teal-3);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+  margin: 0 auto 18px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.state-error-icon { font-size: 44px; margin-bottom: 14px; }
+.state-error h2 {
+  font-family: var(--font-display);
+  font-size: 22px;
+  color: var(--text-1);
+  margin-bottom: 8px;
+}
+.state-error p { color: var(--text-2); margin-bottom: 22px; }
+
+/* ── Responsive ─────────────────────────────────── */
+@media (max-width: 600px) {
+  .results-grid { grid-template-columns: 1fr; }
+  .results-search-row { padding: 28px 0 20px; }
+  .result-card-img { width: 64px; height: 64px; font-size: 22px; }
+}
